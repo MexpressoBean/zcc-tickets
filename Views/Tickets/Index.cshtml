@@ -1,5 +1,5 @@
 ﻿@using zcc_tickets.Models
-@model List<Ticket>
+@model Root
 
 @{
     ViewData["Title"] = "Tickets";
@@ -8,11 +8,20 @@
 
 <p>Here are your tickets listed below: </p>
 
-@foreach (var ticket in Model)
+@foreach (var ticket in Model.tickets)
 {
     <div>
         <h3>@ticket.subject</h3>
+        <h4>@ticket.id</h4>
 
         <p>@ticket.description</p>
     </div>
 }
+
+<div>
+    <a asp-controller="Tickets" asp-action="Index">Prev</a>
+</div>
+
+<div>
+    <a asp-controller="Tickets" asp-action="Index">Next</a>
+</div>

@@ -59,7 +59,6 @@ namespace zcc_tickets.Models
         public List<object> custom_fields { get; set; }
         public object satisfaction_rating { get; set; }
         public List<object> sharing_agreement_ids { get; set; }
-        public List<object> fields { get; set; }
         public List<object> followup_ids { get; set; }
         public object ticket_form_id { get; set; }
         public object brand_id { get; set; }
@@ -67,13 +66,24 @@ namespace zcc_tickets.Models
         public bool allow_attachments { get; set; }
     }
 
+    public class Meta
+    {
+        public bool has_more { get; set; }
+        public string after_cursor { get; set; }
+        public string before_cursor { get; set; }
+    }
+
+    public class Links
+    {
+        public string prev { get; set; }
+        public string next { get; set; }
+    }
+
     public class Root
     {
         public List<Ticket> tickets { get; set; }
-        public string next_page { get; set; }
-        public object previous_page { get; set; }
-        public int count { get; set; }
+        public Meta meta { get; set; }
+        public Links links { get; set; }
     }
-
 
 }
