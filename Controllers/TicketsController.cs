@@ -14,7 +14,7 @@ namespace zcc_tickets.Controllers
         public async Task<IActionResult> Index()
         {
             var tickets = await GetTicketsAsync();
-            return View("Ticket", tickets);
+            return View(tickets);
         }
 
 

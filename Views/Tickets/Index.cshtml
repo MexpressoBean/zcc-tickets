@@ -1,4 +1,5 @@
-﻿@model zcc_tickets.Models.Ticket
+﻿@using zcc_tickets.Models
+@model List<Ticket>
 
 @{
     ViewData["Title"] = "Tickets";
@@ -6,3 +7,12 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Here are your tickets listed below: </p>
+
+@foreach (var ticket in Model)
+{
+    <div>
+        <h3>@ticket.subject</h3>
+
+        <p>@ticket.description</p>
+    </div>
+}
