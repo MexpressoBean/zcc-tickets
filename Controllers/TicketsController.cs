@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using zcc_tickets.Models;
 
@@ -11,33 +10,31 @@ namespace zcc_tickets.Controllers
 {
     public class TicketsController : Controller
     {
-        private readonly (string Email, string AccessToken) ApiCredentials = ("kevinramirezcs1997@gmail.com", "khrbZBUarxuipfUQtFMKOl9YmMEwD6h1O3Z77QtY");
-        private readonly string BaseUrl = "https://zcctickets.zendesk.com";
 
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var tickets = await GetTicketsAsync();
+            return View("Ticket", tickets);
         }
 
-        // figuring this out
-        public static async Task< List<Ticket> > GetTicketsAsync((string Email, string AccessToken) ApiCredentials, string BaseUrl)
-        {
-            //RestClient client = new RestClient($"{BaseUrl}/api/v2");
-            //RestRequest request = new RestRequest($"/tickets.json?page[size]=25 -u {ApiCredentials.Email}/token:{ApiCredentials.AccessToken}", Method.GET);
 
-            RestClient client = new RestClient($"{BaseUrl}/api/v2/tickets.json?page[size]=25");
-            RestRequest request = new RestRequest(Method.GET);
-            request.AddHeader("Authorization", ApiCredentials.AccessToken);
+        public static async Task<List<Ticket>> GetTicketsAsync()
+        {
+            const string EncodedKey = "a2V2aW5yYW1pcmV6Y3MxOTk3QGdtYWlsLmNvbS90b2tlbjpraHJiWkJVYXJ4dWlwZlVRdEZNS09sOVltTUV3RDZoMU8zWjc3UXRZ";
+            const string BaseUrl = "https://zcctickets.zendesk.com";
+
+            RestClient client = new RestClient($"{BaseUrl}/api/v2");
+            RestRequest request = new RestRequest($"/tickets.json", Method.GET);
             request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", $"Basic {EncodedKey}");
 
             var response = await client.ExecuteAsync(request);
 
-            Console.WriteLine(response.StatusCode.ToString());
+            var AllTickets = JsonConvert.DeserializeObject<Root>(response.Content); 
 
-            var tickets = JsonConvert.DeserializeObject<List<Ticket>>(response.Content);
+            return AllTickets.tickets;
 
-            return tickets;
         }
     }
 }
-//await something // goes inside the View() passing to the view
