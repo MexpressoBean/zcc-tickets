@@ -18,10 +18,16 @@
     </div>
 }
 
-<div>
-    <a asp-controller="Tickets" asp-action="Index">Prev</a>
-</div>
+@if (Model.meta.has_more)
+{
+    <div>
+        <a asp-controller="Tickets" asp-action="TicketsNext">Next</a>
+    </div>  
+}
 
-<div>
-    <a asp-controller="Tickets" asp-action="Index">Next</a>
-</div>
+@if(Model.tickets[0].id != 1 )
+{
+    <div>
+        <a asp-controller="Tickets" asp-action="TicketsPrev">Prev</a>
+    </div>
+}

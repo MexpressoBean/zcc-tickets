@@ -10,19 +10,37 @@ namespace zcc_tickets.Controllers
 {
     public class TicketsController : Controller
     {
+        private static readonly string EncodedKey = "a2V2aW5yYW1pcmV6Y3MxOTk3QGdtYWlsLmNvbS90b2tlbjpraHJiWkJVYXJ4dWlwZlVRdEZNS09sOVltTUV3RDZoMU8zWjc3UXRZ";
+        private static readonly string BaseUrl = "https://zcctickets.zendesk.com";
+        private static readonly string TicketPageSize = "25";
+        private static Root TicketsRoot;
+
         public async Task<IActionResult> Index()
         {
-            var TicketsRoot = await GetTicketsAsync();
+            TicketsRoot = await GetTicketsFirstPageAsync();
             return View(TicketsRoot);
         }
 
-        public static async Task<Root> GetTicketsAsync()
+        public async Task<IActionResult> TicketsNext()
         {
-            const string EncodedKey = "a2V2aW5yYW1pcmV6Y3MxOTk3QGdtYWlsLmNvbS90b2tlbjpraHJiWkJVYXJ4dWlwZlVRdEZNS09sOVltTUV3RDZoMU8zWjc3UXRZ";
-            const string BaseUrl = "https://zcctickets.zendesk.com";
+            
+            TicketsRoot = await GetTicketsNextPageAsync();
+ 
+            return View("Index", TicketsRoot);
+        }
 
+        public async Task<IActionResult> TicketsPrev()
+        {
+
+            TicketsRoot = await GetTicketsPrevPageAsync();
+
+            return View("Index", TicketsRoot);
+        }
+
+        public static async Task<Root> GetTicketsFirstPageAsync()
+        {
             RestClient client = new RestClient($"{BaseUrl}/api/v2");
-            RestRequest request = new RestRequest($"/tickets.json?page[size]=25", Method.GET);
+            RestRequest request = new RestRequest($"/tickets.json?page[size]={TicketPageSize}", Method.GET);
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", $"Basic {EncodedKey}");
 
@@ -30,6 +48,36 @@ namespace zcc_tickets.Controllers
             var Tickets = JsonConvert.DeserializeObject<Root>(response.Content); 
 
             return Tickets;
+        }
+
+        public static async Task<Root> GetTicketsNextPageAsync()
+        { 
+            if(TicketsRoot.meta.has_more)
+            {
+                RestClient client = new RestClient($"{BaseUrl}/api/v2");
+                RestRequest request = new RestRequest($"{TicketsRoot.links.next}"[38..], Method.GET);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Authorization", $"Basic {EncodedKey}");
+
+                var response = await client.ExecuteAsync(request);
+                var Tickets = JsonConvert.DeserializeObject<Root>(response.Content);
+
+                return Tickets;
+            }
+            return null;
+        }
+
+        public static async Task<Root> GetTicketsPrevPageAsync()
+        {
+                RestClient client = new RestClient($"{BaseUrl}/api/v2");
+                RestRequest request = new RestRequest($"{TicketsRoot.links.prev}"[38..], Method.GET);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Authorization", $"Basic {EncodedKey}");
+
+                var response = await client.ExecuteAsync(request);
+                var Tickets = JsonConvert.DeserializeObject<Root>(response.Content);
+
+                return Tickets;
         }
 
     }
