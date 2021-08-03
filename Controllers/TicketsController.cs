@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using zcc_tickets.Models;
 
@@ -18,36 +19,50 @@ namespace zcc_tickets.Controllers
         public async Task<IActionResult> Index()
         {
             TicketsRoot = await GetTicketsFirstPageAsync();
+
             return View(TicketsRoot);
         }
 
         public async Task<IActionResult> TicketsNext()
         {
-            
             TicketsRoot = await GetTicketsNextPageAsync();
- 
+
             return View("Index", TicketsRoot);
         }
 
         public async Task<IActionResult> TicketsPrev()
         {
-
             TicketsRoot = await GetTicketsPrevPageAsync();
 
             return View("Index", TicketsRoot);
         }
 
+
+        public IActionResult ViewTicket(int id)
+        {
+            return View(TicketsRoot.tickets[id-1]);
+        }
+
         public static async Task<Root> GetTicketsFirstPageAsync()
         {
-            RestClient client = new RestClient($"{BaseUrl}/api/v2");
-            RestRequest request = new RestRequest($"/tickets.json?page[size]={TicketPageSize}", Method.GET);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", $"Basic {EncodedKey}");
+            try
+            {
+                RestClient client = new RestClient($"{BaseUrl}/api/v2");
+                RestRequest request = new RestRequest($"/tickets.json?page[size]={TicketPageSize}", Method.GET);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Authorization", $"Basic {EncodedKey}");
 
-            var response = await client.ExecuteAsync(request);
-            var Tickets = JsonConvert.DeserializeObject<Root>(response.Content); 
+                var response = await client.ExecuteAsync(request);
 
-            return Tickets;
+                var Tickets = JsonConvert.DeserializeObject<Root>(response.Content);
+
+                return Tickets;
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine(err);
+                return null;
+            }
         }
 
         public static async Task<Root> GetTicketsNextPageAsync()
