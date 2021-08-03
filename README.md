@@ -1,5 +1,5 @@
 # Zendesk Ticket Viewer
-### Coding challenge for [Zendesk](https://www.zendesk.com/) by Kevin Ramirez
+### Coding challenge for [Zendesk](https://www.zendesk.com/) by [Kevin Ramirez](https://www.linkedin.com/in/kevin-ramirez-b37326183/)
 ### Utilzes C# and [ASP.NET](https://dotnet.microsoft.com/apps/aspnet)
 
 ## Contents:
