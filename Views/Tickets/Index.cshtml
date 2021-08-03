@@ -3,31 +3,45 @@
 
 @{
     ViewData["Title"] = "Tickets";
+    var count = 0;
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Here are your tickets listed below: </p>
-
-@foreach (var ticket in Model.tickets)
+@if (Model.tickets != null)
 {
-    <div>
-        <a asp-controller="Tickets" asp-action="ViewTicket" asp-route-id="@ticket.id"><h3>@ticket.subject:</h3></a><p>@ticket.status</p>
-        <h4>@ticket.id</h4>
+    <h1>@ViewData["Title"]</h1>
+
+    <p>Here are your tickets listed below: </p>
+
+    @foreach (var ticket in Model.tickets)
+    {
+        <div>
+            <a asp-controller="Tickets" asp-action="ViewTicket" asp-route-id="@count"><h3>@ticket.subject:</h3></a><p>@ticket.status</p>
+            <h4>@ticket.id</h4>
+            <p>@ticket.description</p>
+        </div>
         <hr />
-        <p>@ticket.description</p>
-    </div>
-}
+        { count++; }
+    }
 
-@if (Model.meta.has_more)
-{
-    <div>
-        <a asp-controller="Tickets" asp-action="TicketsNext">Next</a>
-    </div>  
-}
+    @if (Model.meta.has_more)
+    {
+        <div>
+            <a asp-controller="Tickets" asp-action="TicketsNext">Next</a>
+        </div>
+        { count = 0;}
+    }
 
-@if(Model.tickets[0].id != 1 )
+    @if (Model.tickets[0].id != 1)
+    {
+        <div>
+            <a asp-controller="Tickets" asp-action="TicketsPrev">Prev</a>
+        </div>
+        { count = 0;}
+    }
+}
+else
 {
-    <div>
-        <a asp-controller="Tickets" asp-action="TicketsPrev">Prev</a>
-    </div>
+    <h1>Error - Something went wrong with the request...</h1>
+    <br />
+    <h3>Please reload or try again later.</h3>
 }

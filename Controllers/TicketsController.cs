@@ -40,13 +40,11 @@ namespace zcc_tickets.Controllers
 
         public IActionResult ViewTicket(int id)
         {
-            return View(TicketsRoot.tickets[id-1]);
+            return View(TicketsRoot.tickets[id]);
         }
 
         public static async Task<Root> GetTicketsFirstPageAsync()
         {
-            try
-            {
                 RestClient client = new RestClient($"{BaseUrl}/api/v2");
                 RestRequest request = new RestRequest($"/tickets.json?page[size]={TicketPageSize}", Method.GET);
                 request.AddHeader("Content-Type", "application/json");
@@ -57,12 +55,6 @@ namespace zcc_tickets.Controllers
                 var Tickets = JsonConvert.DeserializeObject<Root>(response.Content);
 
                 return Tickets;
-            }
-            catch (Exception err)
-            {
-                Console.WriteLine(err);
-                return null;
-            }
         }
 
         public static async Task<Root> GetTicketsNextPageAsync()
