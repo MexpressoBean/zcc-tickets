@@ -11,8 +11,8 @@ namespace zcc_tickets.Controllers
 {
     public class TicketsController : Controller
     {
-        private static readonly string EncodedKey = "a2V2aW5yYW1pcmV6Y3MxOTk3QGdtYWlsLmNvbS90b2tlbjpraHJiWkJVYXJ4dWlwZlVRdEZNS09sOVltTUV3RDZoMU8zWjc3UXRZ";
-        private static readonly string BaseUrl = "https://zcctickets.zendesk.com";
+        private static readonly string EncodedKey = "insert key here";
+        private static readonly string BaseUrl = "https:// insert url here .zendesk.com";
         private static readonly string TicketPageSize = "25";
         private static Root TicketsRoot;
 
